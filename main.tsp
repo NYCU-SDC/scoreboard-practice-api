@@ -4,7 +4,6 @@ using Http;
 
 @service(#{ title: "Scoreboard Service", version: "1.0.0" })
 @route("/api")
-@useAuth(BearerAuth)
 namespace ScoreboardService;
 
 @format("uuid")
@@ -76,10 +75,17 @@ namespace BasicController {
     @statusCode status: 401;
     @body body: ProblemDetails;
   };
+
+  @route("/logout")
+  @post
+  op logout(): {
+    @statusCode status: 204;
+  };
 }
 
 @tag("Users")
 @route("/users")
+@useAuth(BearerAuth)
 namespace UserController {
   model UserRequest {
     @example("John Doe")
@@ -122,6 +128,7 @@ namespace UserController {
 }
 
 @route("/scoreboards")
+@useAuth(BearerAuth)
 namespace ScoreboardController {
   model ScoreboardRequest {
     @example("My Scoreboard")
