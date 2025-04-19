@@ -15,17 +15,22 @@ scalar email extends string;
 
 model PaginatedParams {
   @example(1)
-  @query page?: int32;
+  @query
+  page?: int32;
 
   @example(10)
-  @minValue(1) @maxValue(100)
-  @query size?: int32;
+  @minValue(1)
+  @maxValue(100)
+  @query
+  size?: int32;
 
   @example("asc")
-  @query sort?: "asc" | "desc";
+  @query
+  sort?: "asc" | "desc";
 
   @example("createdAt")
-  @query sortBy?: string;
+  @query
+  sortBy?: string;
 }
 
 model PaginatedResponse<T> {
@@ -33,16 +38,16 @@ model PaginatedResponse<T> {
 
   @example(10)
   totalPages: int32;
-  
+
   @example(100)
   totalItems: int32;
-  
+
   @example(1)
   currentPage: int32;
-  
+
   @example(10)
   pageSize: int32;
-  
+
   @example(true)
   hasNextPage: boolean;
 }
@@ -56,14 +61,15 @@ namespace BasicController {
     @example("password")
     password: string;
   }
-  
+
   model LoginResponse {
     token: string;
     refreshToken: string;
   }
 
   @route("/login")
-  @post op login(@body body: LoginRequest): {
+  @post
+  op login(@body body: LoginRequest): {
     @statusCode status: 200;
     @body body: LoginResponse;
   } | {
@@ -75,7 +81,6 @@ namespace BasicController {
 @tag("Users")
 @route("/users")
 namespace UserController {
-
   model UserRequest {
     @example("John Doe")
     @minLength(1)
@@ -98,7 +103,7 @@ namespace UserController {
     createdAt: utcDateTime;
     updatedAt: utcDateTime;
   }
- 
+
   @get op list(...PaginatedParams): {
     @statusCode status: 200;
     @body body: PaginatedResponse<User>;
@@ -118,12 +123,11 @@ namespace UserController {
 
 @route("/scoreboards")
 namespace ScoreboardController {
-  
   model ScoreboardRequest {
     @example("My Scoreboard")
     name: string;
   }
-  
+
   model Scoreboard {
     id: uuid;
     name: string;
@@ -138,7 +142,7 @@ namespace ScoreboardController {
     username: string;
     score: int32;
   }
-  
+
   model ScoreboardItem {
     id: uuid;
     userId: uuid;
@@ -150,7 +154,8 @@ namespace ScoreboardController {
 
   /** List scoreboards */
   @tag("Scoreboards")
-  @get op list(...PaginatedParams): {
+  @get
+  op list(...PaginatedParams): {
     @statusCode status: 200;
     @body body: PaginatedResponse<Scoreboard>;
   } | {
@@ -160,7 +165,8 @@ namespace ScoreboardController {
 
   /** Create a scoreboard */
   @tag("Scoreboards")
-  @post op createScoreboard(@body body: ScoreboardRequest): {
+  @post
+  op createScoreboard(@body body: ScoreboardRequest): {
     @statusCode status: 200;
     @body body: Scoreboard;
   } | {
@@ -170,17 +176,19 @@ namespace ScoreboardController {
 
   /** Update a scoreboard */
   @tag("Scoreboards")
-  @put op updateScoreboard(@path id: uuid, @body body: ScoreboardRequest): {
+  @put
+  op updateScoreboard(@path id: uuid, @body body: ScoreboardRequest): {
     @statusCode status: 200;
     @body body: Scoreboard;
   } | {
     @statusCode status: 500;
     @body body: ProblemDetails;
   };
- 
+
   /** Read a scoreboard */
   @tag("Scoreboards")
-  @get op read(@path id: uuid): {
+  @get
+  op read(@path id: uuid): {
     @statusCode status: 200;
     @body body: Scoreboard;
   } | {
@@ -190,7 +198,8 @@ namespace ScoreboardController {
 
   /** Soft delete a scoreboard */
   @tag("Scoreboards")
-  @delete op delete(@path id: uuid): {
+  @delete
+  op delete(@path id: uuid): {
     @statusCode status: 204;
   } | {
     @statusCode status: 500;
@@ -199,11 +208,14 @@ namespace ScoreboardController {
 
   @route("/{id}/items")
   namespace ScoreboardItems {
-    @tag("Scoreboard Items")
-
     /** Create a scoreboard item */
     @tag("Scoreboard Items")
-    @post op createScoreboardItem(@path id: uuid, @body body: ScoreboardItemRequest): {
+    @tag("Scoreboard Items")
+    @post
+    op createScoreboardItem(
+      @path id: uuid,
+      @body body: ScoreboardItemRequest,
+    ): {
       @statusCode status: 200;
       @body body: ScoreboardItem;
     } | {
@@ -214,7 +226,8 @@ namespace ScoreboardController {
     /** Soft delete a scoreboard item */
     @tag("Scoreboard Items")
     @route("/{itemId}")
-    @delete op deleteScoreboardItem(@path id: uuid, @path itemId: uuid): {
+    @delete
+    op deleteScoreboardItem(@path id: uuid, @path itemId: uuid): {
       @statusCode status: 204;
     } | {
       @statusCode status: 500;
