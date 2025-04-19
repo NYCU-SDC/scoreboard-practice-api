@@ -4,143 +4,221 @@ using Http;
 
 @service(#{ title: "Scoreboard Service", version: "1.0.0" })
 @route("/api")
+@useAuth(BearerAuth)
 namespace ScoreboardService;
 
 @format("uuid")
 scalar uuid extends string;
 
-model User {
-  id: uuid;
-  name: string;
-  email: string;
-  createdAt: utcDateTime;
-  updatedAt: utcDateTime;
+@format("email")
+scalar email extends string;
+
+model PaginatedParams {
+  @example(1)
+  @query page?: int32;
+
+  @example(10)
+  @minValue(1) @maxValue(100)
+  @query size?: int32;
+
+  @example("asc")
+  @query sort?: "asc" | "desc";
+
+  @example("createdAt")
+  @query sortBy?: string;
 }
 
-model UserRequest {
-  name: string;
-  email: string;
+model PaginatedResponse<T> {
+  items: T[];
+
+  @example(10)
+  totalPages: int32;
+  
+  @example(100)
+  totalItems: int32;
+  
+  @example(1)
+  currentPage: int32;
+  
+  @example(10)
+  pageSize: int32;
+  
+  @example(true)
+  hasNextPage: boolean;
 }
 
-model UserList {
-  items: User[];
-}
+@tag("Basic")
+namespace BasicController {
+  model LoginRequest {
+    @example("admin")
+    username: string;
 
-model ScoreboardList {
-  items: Scoreboard[];
-}
+    @example("password")
+    password: string;
+  }
+  
+  model LoginResponse {
+    token: string;
+    refreshToken: string;
+  }
 
-model ScoreboardRequest {
-  name: string;
-}
-
-model Scoreboard {
-  id: uuid;
-  name: string;
-  authorId: uuid;
-  authorName: string;
-  items: ScoreboardItem[];
-  createdAt: utcDateTime;
-  updatedAt: utcDateTime;
-  deletedAt: utcDateTime;
-}
-
-model ScoreboardItem {
-  id: uuid;
-  userId: uuid;
-  username: string;
-  score: int32;
-  createdAt: utcDateTime;
-  updatedAt: utcDateTime;
-  deletedAt: utcDateTime;
-}
-
-model ScoreboardItemRequest {
-  userId: uuid;
-  username: string;
-  score: int32;
+  @route("/login")
+  @post op login(@body body: LoginRequest): {
+    @statusCode status: 200;
+    @body body: LoginResponse;
+  } | {
+    @statusCode status: 401;
+    @body body: ProblemDetails;
+  };
 }
 
 @tag("Users")
 @route("/users")
 namespace UserController {
-  @get op list(): {
-    status: 200;
-    body: UserList[];
+
+  model UserRequest {
+    @example("John Doe")
+    @minLength(1)
+    @maxLength(20)
+    name: string;
+
+    email: email;
+
+    @example("password")
+    @minLength(8)
+    @maxLength(20)
+    @pattern("^[a-zA-Z0-9]+$")
+    password: string;
+  }
+
+  model User {
+    id: uuid;
+    name: string;
+    email: email;
+    createdAt: utcDateTime;
+    updatedAt: utcDateTime;
+  }
+ 
+  @get op list(...PaginatedParams): {
+    @statusCode status: 200;
+    @body body: PaginatedResponse<User>;
   } | {
-    status: 500;
-    body: ProblemDetails;
+    @statusCode status: 500;
+    @body body: ProblemDetails;
   };
 
   @post op create(@body body: UserRequest): {
-    status: 200;
-    body: User;
+    @statusCode status: 200;
+    @body body: User;
   } | {
-    status: 500;
-    body: ProblemDetails;
+    @statusCode status: 500;
+    @body body: ProblemDetails;
   };
 }
 
 @route("/scoreboards")
 namespace ScoreboardController {
+  
+  model ScoreboardRequest {
+    @example("My Scoreboard")
+    name: string;
+  }
+  
+  model Scoreboard {
+    id: uuid;
+    name: string;
+    authorId: uuid;
+    authorName: string;
+    createdAt: utcDateTime;
+    updatedAt: utcDateTime;
+  }
+
+  model ScoreboardItemRequest {
+    userId: uuid;
+    username: string;
+    score: int32;
+  }
+  
+  model ScoreboardItem {
+    id: uuid;
+    userId: uuid;
+    username: string;
+    score: int32;
+    createdAt: utcDateTime;
+    updatedAt: utcDateTime;
+  }
+
   /** List scoreboards */
   @tag("Scoreboards")
-  @get op list(): {
-    @body scoreboards: ScoreboardList[];
+  @get op list(...PaginatedParams): {
+    @statusCode status: 200;
+    @body body: PaginatedResponse<Scoreboard>;
   } | {
-    status: 500;
-    body: ProblemDetails;
+    @statusCode status: 500;
+    @body body: ProblemDetails;
   };
 
   /** Create a scoreboard */
   @tag("Scoreboards")
   @post op createScoreboard(@body body: ScoreboardRequest): {
-    status: 200;
-    body: Scoreboard;
+    @statusCode status: 200;
+    @body body: Scoreboard;
   } | {
-    status: 500;
-    body: ProblemDetails;
+    @statusCode status: 500;
+    @body body: ProblemDetails;
   };
 
+  /** Update a scoreboard */
+  @tag("Scoreboards")
+  @put op updateScoreboard(@path id: uuid, @body body: ScoreboardRequest): {
+    @statusCode status: 200;
+    @body body: Scoreboard;
+  } | {
+    @statusCode status: 500;
+    @body body: ProblemDetails;
+  };
+ 
   /** Read a scoreboard */
   @tag("Scoreboards")
   @get op read(@path id: uuid): {
-    status: 200;
-    body: Scoreboard;
+    @statusCode status: 200;
+    @body body: Scoreboard;
   } | {
-    status: 500;
-    body: ProblemDetails;
+    @statusCode status: 500;
+    @body body: ProblemDetails;
   };
 
   /** Soft delete a scoreboard */
   @tag("Scoreboards")
   @delete op delete(@path id: uuid): {
-    status: 204;
+    @statusCode status: 204;
   } | {
-    status: 500;
-    body: ProblemDetails;
+    @statusCode status: 500;
+    @body body: ProblemDetails;
   };
 
   @route("/{id}/items")
   namespace ScoreboardItems {
+    @tag("Scoreboard Items")
+
     /** Create a scoreboard item */
     @tag("Scoreboard Items")
     @post op createScoreboardItem(@path id: uuid, @body body: ScoreboardItemRequest): {
-      status: 200;
-      body: ScoreboardItem;
+      @statusCode status: 200;
+      @body body: ScoreboardItem;
     } | {
-      status: 500;
-      body: ProblemDetails;
+      @statusCode status: 500;
+      @body body: ProblemDetails;
     };
 
     /** Soft delete a scoreboard item */
     @tag("Scoreboard Items")
     @route("/{itemId}")
     @delete op deleteScoreboardItem(@path id: uuid, @path itemId: uuid): {
-      status: 204;
+      @statusCode status: 204;
     } | {
-      status: 500;
-      body: ProblemDetails;
+      @statusCode status: 500;
+      @body body: ProblemDetails;
     };
   }
 }
