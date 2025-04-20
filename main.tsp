@@ -12,6 +12,14 @@ scalar uuid extends string;
 @format("email")
 scalar email extends string;
 
+model User {
+  id: uuid;
+  username: string;
+  email: email;
+  createdAt: utcDateTime;
+  updatedAt: utcDateTime;
+}
+
 model PaginatedParams {
   @example(1)
   @query
@@ -66,6 +74,27 @@ namespace BasicController {
     refreshToken: string;
   }
 
+  model RegisterRequest {
+    @example("username")
+    username: string;
+
+    @example("password")
+    password: string;
+
+    @example("email@example.com")
+    email: email;
+  }
+
+  @route("/me")
+  @get
+  op me(): {
+    @statusCode status: 200;
+    @body body: User;
+  } | {
+    @statusCode status: 401;
+    @body body: ProblemDetails;
+  };
+
   @route("/login")
   @post
   op login(@body body: LoginRequest): {
@@ -81,6 +110,16 @@ namespace BasicController {
   op logout(): {
     @statusCode status: 204;
   };
+
+  @route("/register")
+  @post
+  op register(@body body: RegisterRequest): {
+    @statusCode status: 200;
+    @body body: User;
+  } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
+  };
 }
 
 @tag("Users")
@@ -91,23 +130,16 @@ namespace UserController {
     @example("John Doe")
     @minLength(1)
     @maxLength(20)
-    name: string;
+    @pattern("^\\w+$")
+    @doc("Username must be at least 1 character long and contain only letters, numbers, and underscores.")
+    username: string;
 
     email: email;
 
     @example("password")
     @minLength(8)
     @maxLength(20)
-    @pattern("^[a-zA-Z0-9]+$")
     password: string;
-  }
-
-  model User {
-    id: uuid;
-    name: string;
-    email: email;
-    createdAt: utcDateTime;
-    updatedAt: utcDateTime;
   }
 
   @get op list(...PaginatedParams): {
@@ -215,8 +247,17 @@ namespace ScoreboardController {
 
   @route("/{id}/items")
   namespace ScoreboardItems {
-    /** Create a scoreboard item */
     @tag("Scoreboard Items")
+    @get
+    op listScoreboardItems(@path id: uuid, ...PaginatedParams): {
+      @statusCode status: 200;
+      @body body: PaginatedResponse<ScoreboardItem>;
+    } | {
+      @statusCode status: 500;
+      @body body: ProblemDetails;
+    };
+
+    /** Create a scoreboard item */
     @tag("Scoreboard Items")
     @post
     op createScoreboardItem(
