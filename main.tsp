@@ -12,6 +12,14 @@ scalar uuid extends string;
 @format("email")
 scalar email extends string;
 
+model User {
+  id: uuid;
+  name: string;
+  email: email;
+  createdAt: utcDateTime;
+  updatedAt: utcDateTime;
+}
+
 model PaginatedParams {
   @example(1)
   @query
@@ -66,6 +74,17 @@ namespace BasicController {
     refreshToken: string;
   }
 
+  model RegisterRequest {
+    @example("username")
+    username: string;
+
+    @example("password")
+    password: string;
+
+    @example("email@example.com")
+    email: email;
+  }
+
   @route("/login")
   @post
   op login(@body body: LoginRequest): {
@@ -80,6 +99,16 @@ namespace BasicController {
   @post
   op logout(): {
     @statusCode status: 204;
+  };
+
+  @route("/register")
+  @post
+  op register(@body body: RegisterRequest): {
+    @statusCode status: 200;
+    @body body: User;
+  } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
   };
 }
 
@@ -100,14 +129,6 @@ namespace UserController {
     @maxLength(20)
     @pattern("^[a-zA-Z0-9]+$")
     password: string;
-  }
-
-  model User {
-    id: uuid;
-    name: string;
-    email: email;
-    createdAt: utcDateTime;
-    updatedAt: utcDateTime;
   }
 
   @get op list(...PaginatedParams): {
