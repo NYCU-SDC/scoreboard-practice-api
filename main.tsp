@@ -86,7 +86,8 @@ namespace BasicController {
   }
 
   @route("/me")
-  @get op me(): {
+  @get
+  op me(): {
     @statusCode status: 200;
     @body body: User;
   } | {
