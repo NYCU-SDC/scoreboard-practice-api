@@ -48,7 +48,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: spec-file
-          path: tsp-output/schema/openapi.yaml
 
       - name: Download swagger-ui.html
         uses: actions/download-artifact@v4
@@ -64,10 +63,10 @@ jobs:
       - name: Generate Redocly and Swagger UI
         run: |
           mkdir -p ./redocly-ui
-          redocly build-docs openapi.yaml --output ./redocly-ui/redocly.html
+          redocly build-docs openapi.1.0.0.yaml --output ./redocly-ui/redocly.html
 
           mkdir -p ./publish
-          cp openapi.yaml ./publish/
+          cp openapi.1.0.0.yaml ./publish/
           cp redocly-ui/redocly.html ./publish/
           cp swagger-ui.html ./publish/index.html
 
