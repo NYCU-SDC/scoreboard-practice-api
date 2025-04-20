@@ -42,6 +42,25 @@ paths:
           description: 'There is no content to send for this request, but the headers may be useful. '
       tags:
         - Basic
+  /api/me:
+    get:
+      operationId: BasicController_me
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Basic
   /api/register:
     post:
       operationId: BasicController_register
