@@ -2,8 +2,6 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   generate-openapi-spec:
@@ -53,10 +51,12 @@ jobs:
 
       - name: Generate Swagger UI
         run: |
-          redocly build-docs openapi.yaml --output ./swagger-ui/index.html
+          mkdir -p ./redocly-ui
+          cp openapi.yaml ./redocly-ui/
+          redocly build-docs openapi.yaml --output ./redocly-ui/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./swagger-ui
+          publish_dir: ./redocly-ui
