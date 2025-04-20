@@ -1,0 +1,569 @@
+openapi: 3.1.0
+info:
+  title: Scoreboard Service
+  version: 0.0.0
+tags:
+  - name: Basic
+  - name: Users
+  - name: Scoreboards
+  - name: Scoreboard Items
+paths:
+  /api/login:
+    post:
+      operationId: BasicController_login
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicController.LoginResponse'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Basic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BasicController.LoginRequest'
+  /api/logout:
+    post:
+      operationId: BasicController_logout
+      parameters: []
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Basic
+  /api/scoreboards:
+    get:
+      operationId: ScoreboardController_list
+      description: List scoreboards
+      parameters:
+        - $ref: '#/components/parameters/PaginatedParams.page'
+        - $ref: '#/components/parameters/PaginatedParams.size'
+        - $ref: '#/components/parameters/PaginatedParams.sort'
+        - $ref: '#/components/parameters/PaginatedParams.sortBy'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - totalPages
+                  - totalItems
+                  - currentPage
+                  - pageSize
+                  - hasNextPage
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScoreboardController.Scoreboard'
+                  totalPages:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 10
+                  totalItems:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 100
+                  currentPage:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 1
+                  pageSize:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 10
+                  hasNextPage:
+                    type: boolean
+                    examples:
+                      - true
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Scoreboards
+      security:
+        - BearerAuth: []
+    post:
+      operationId: ScoreboardController_createScoreboard
+      description: Create a scoreboard
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreboardController.Scoreboard'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Scoreboards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreboardController.ScoreboardRequest'
+      security:
+        - BearerAuth: []
+  /api/scoreboards/{id}:
+    put:
+      operationId: ScoreboardController_updateScoreboard
+      description: Update a scoreboard
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreboardController.Scoreboard'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Scoreboards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreboardController.ScoreboardRequest'
+      security:
+        - BearerAuth: []
+    get:
+      operationId: ScoreboardController_read
+      description: Read a scoreboard
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreboardController.Scoreboard'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Scoreboards
+      security:
+        - BearerAuth: []
+    delete:
+      operationId: ScoreboardController_delete
+      description: Soft delete a scoreboard
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Scoreboards
+      security:
+        - BearerAuth: []
+  /api/scoreboards/{id}/items:
+    post:
+      operationId: ScoreboardItems_createScoreboardItem
+      description: Create a scoreboard item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScoreboardController.ScoreboardItem'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Scoreboard Items
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreboardController.ScoreboardItemRequest'
+      security:
+        - BearerAuth: []
+  /api/scoreboards/{id}/items/{itemId}:
+    delete:
+      operationId: ScoreboardItems_deleteScoreboardItem
+      description: Soft delete a scoreboard item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Scoreboard Items
+      security:
+        - BearerAuth: []
+  /api/users:
+    get:
+      operationId: UserController_list
+      parameters:
+        - $ref: '#/components/parameters/PaginatedParams.page'
+        - $ref: '#/components/parameters/PaginatedParams.size'
+        - $ref: '#/components/parameters/PaginatedParams.sort'
+        - $ref: '#/components/parameters/PaginatedParams.sortBy'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - totalPages
+                  - totalItems
+                  - currentPage
+                  - pageSize
+                  - hasNextPage
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserController.User'
+                  totalPages:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 10
+                  totalItems:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 100
+                  currentPage:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 1
+                  pageSize:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 10
+                  hasNextPage:
+                    type: boolean
+                    examples:
+                      - true
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+    post:
+      operationId: UserController_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserController.User'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserController.UserRequest'
+      security:
+        - BearerAuth: []
+components:
+  parameters:
+    PaginatedParams.page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+      explode: false
+    PaginatedParams.size:
+      name: size
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+      explode: false
+    PaginatedParams.sort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+      explode: false
+    PaginatedParams.sortBy:
+      name: sortBy
+      in: query
+      required: false
+      schema:
+        type: string
+      explode: false
+  schemas:
+    BasicController.LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          examples:
+            - admin
+        password:
+          type: string
+          examples:
+            - password
+    BasicController.LoginResponse:
+      type: object
+      required:
+        - token
+        - refreshToken
+      properties:
+        token:
+          type: string
+        refreshToken:
+          type: string
+    ProblemDetails:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+    ScoreboardController.Scoreboard:
+      type: object
+      required:
+        - id
+        - name
+        - authorId
+        - authorName
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+        authorId:
+          $ref: '#/components/schemas/uuid'
+        authorName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ScoreboardController.ScoreboardItem:
+      type: object
+      required:
+        - id
+        - userId
+        - username
+        - score
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        userId:
+          $ref: '#/components/schemas/uuid'
+        username:
+          type: string
+        score:
+          type: integer
+          format: int32
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ScoreboardController.ScoreboardItemRequest:
+      type: object
+      required:
+        - userId
+        - username
+        - score
+      properties:
+        userId:
+          $ref: '#/components/schemas/uuid'
+        username:
+          type: string
+        score:
+          type: integer
+          format: int32
+    ScoreboardController.ScoreboardRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          examples:
+            - My Scoreboard
+    UserController.User:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          $ref: '#/components/schemas/uuid'
+        name:
+          type: string
+        email:
+          $ref: '#/components/schemas/email'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    UserController.UserRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 20
+          examples:
+            - John Doe
+        email:
+          $ref: '#/components/schemas/email'
+        password:
+          type: string
+          minLength: 8
+          maxLength: 20
+          pattern: ^[a-zA-Z0-9]+$
+          examples:
+            - password
+    email:
+      type: string
+      format: email
+    uuid:
+      type: string
+      format: uuid
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: Bearer
