@@ -14,7 +14,7 @@ scalar email extends string;
 
 model User {
   id: uuid;
-  name: string;
+  username: string;
   email: email;
   createdAt: utcDateTime;
   updatedAt: utcDateTime;
@@ -120,14 +120,15 @@ namespace UserController {
     @example("John Doe")
     @minLength(1)
     @maxLength(20)
-    name: string;
+    @pattern("^\\w+$")
+    @doc("Username must be at least 1 character long and contain only letters, numbers, and underscores.")
+    username: string;
 
     email: email;
 
     @example("password")
     @minLength(8)
     @maxLength(20)
-    @pattern("^[a-zA-Z0-9]+$")
     password: string;
   }
 
