@@ -235,107 +235,128 @@ namespace ScoreboardController {
   /** Update a scoreboard */
   @tag("Scoreboards")
   @put
-  op updateScoreboard(@path id: uuid, @body body: ScoreboardRequest): {
-    @statusCode status: 200;
-    @body body: Scoreboard;
-  } | {
-    @statusCode status: 400;
-    @body body: ProblemDetails;
-  } | {
-    @statusCode status: 404;
-    @body body: ProblemDetails;
-  } | {
-    @statusCode status: 500;
-    @body body: ProblemDetails;
-  };
+  op updateScoreboard(@path id: uuid, @body body: ScoreboardRequest):
+    | {
+        @statusCode status: 200;
+        @body body: Scoreboard;
+      }
+    | {
+        @statusCode status: 400;
+        @body body: ProblemDetails;
+      }
+    | {
+        @statusCode status: 404;
+        @body body: ProblemDetails;
+      }
+    | {
+        @statusCode status: 500;
+        @body body: ProblemDetails;
+      };
 
   /** Read a scoreboard */
   @tag("Scoreboards")
   @get
-  op read(@path id: uuid): {
-    @statusCode status: 200;
-    @body body: Scoreboard;
-  } | {
-    @statusCode status: 400;
-    @body body: ProblemDetails;
-  } | {
-    @statusCode status: 404;
-    @body body: ProblemDetails;
-  } | {
-    @statusCode status: 500;
-    @body body: ProblemDetails;
-  };
+  op read(@path id: uuid):
+    | {
+        @statusCode status: 200;
+        @body body: Scoreboard;
+      }
+    | {
+        @statusCode status: 400;
+        @body body: ProblemDetails;
+      }
+    | {
+        @statusCode status: 404;
+        @body body: ProblemDetails;
+      }
+    | {
+        @statusCode status: 500;
+        @body body: ProblemDetails;
+      };
 
   /** Soft delete a scoreboard */
   @tag("Scoreboards")
   @delete
-  op delete(@path id: uuid): {
-    @statusCode status: 204;
-  } | {
-    @statusCode status: 400;
-    @body body: ProblemDetails;
-  } | {
-    @statusCode status: 404;
-    @body body: ProblemDetails;
-  } | {
-    @statusCode status: 500;
-    @body body: ProblemDetails;
-  };
+  op delete(@path id: uuid):
+    | {
+        @statusCode status: 204;
+      }
+    | {
+        @statusCode status: 400;
+        @body body: ProblemDetails;
+      }
+    | {
+        @statusCode status: 404;
+        @body body: ProblemDetails;
+      }
+    | {
+        @statusCode status: 500;
+        @body body: ProblemDetails;
+      };
 
   @route("/{id}/items")
   namespace ScoreboardItems {
     @tag("Scoreboard Items")
     @get
-    op listScoreboardItems(@path id: uuid, ...PaginatedParams): {
-      @statusCode status: 200;
-      @body body: PaginatedResponse<ScoreboardItem>;
-    } | {
-      @statusCode status: 400;
-      @body body: ProblemDetails;
-    } | {
-      @statusCode status: 404;
-      @body body: ProblemDetails;
-    } | {
-      @statusCode status: 500;
-      @body body: ProblemDetails;
-    };
+    op listScoreboardItems(@path id: uuid, ...PaginatedParams):
+      | {
+          @statusCode status: 200;
+          @body body: PaginatedResponse<ScoreboardItem>;
+        }
+      | {
+          @statusCode status: 400;
+          @body body: ProblemDetails;
+        }
+      | {
+          @statusCode status: 404;
+          @body body: ProblemDetails;
+        }
+      | {
+          @statusCode status: 500;
+          @body body: ProblemDetails;
+        };
 
     /** Create a scoreboard item */
     @tag("Scoreboard Items")
     @post
-    op createScoreboardItem(
-      @path id: uuid,
-      @body body: ScoreboardItemRequest,
-    ): {
-      @statusCode status: 200;
-      @body body: ScoreboardItem;
-    } | {
-      @statusCode status: 400;
-      @body body: ProblemDetails;
-    } | {
-      @statusCode status: 404;
-      @body body: ProblemDetails;
-    } | {
-      @statusCode status: 500;
-      @body body: ProblemDetails;
-    };
+    op createScoreboardItem(@path id: uuid, @body body: ScoreboardItemRequest):
+      | {
+          @statusCode status: 200;
+          @body body: ScoreboardItem;
+        }
+      | {
+          @statusCode status: 400;
+          @body body: ProblemDetails;
+        }
+      | {
+          @statusCode status: 404;
+          @body body: ProblemDetails;
+        }
+      | {
+          @statusCode status: 500;
+          @body body: ProblemDetails;
+        };
 
     /** Soft delete a scoreboard item */
     @tag("Scoreboard Items")
     @route("/{itemId}")
     @delete
-    op deleteScoreboardItem(@path id: uuid, @path itemId: uuid): {
-      @statusCode status: 204;
-    } | {
-      @statusCode status: 400;
-      @body body: ProblemDetails;
-    } | {
-      @statusCode status: 404;
-      @body body: ProblemDetails;
-    } | {
-      @statusCode status: 500;
-      @body body: ProblemDetails;
-    };
+    op deleteScoreboardItem(@path id: uuid, @path itemId: uuid):
+      | {
+          @statusCode status: 204;
+        }
+      | {
+          @statusCode status: 400;
+          @body body: ProblemDetails;
+        }
+      | {
+          @statusCode status: 404;
+          @body body: ProblemDetails;
+        }
+      | {
+          @statusCode status: 500;
+          @body body: ProblemDetails;
+        };
   }
 }
 
