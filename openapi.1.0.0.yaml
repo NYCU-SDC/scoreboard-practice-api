@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Scoreboard Service
-  version: 0.0.0
+  version: 1.0.0
 tags:
   - name: Basic
   - name: Users
@@ -138,6 +138,12 @@ paths:
                     type: boolean
                     examples:
                       - true
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -159,6 +165,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScoreboardController.Scoreboard'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -192,6 +204,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScoreboardController.Scoreboard'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -224,6 +248,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScoreboardController.Scoreboard'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -246,6 +282,18 @@ paths:
       responses:
         '204':
           description: 'There is no content to send for this request, but the headers may be useful. '
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -312,6 +360,18 @@ paths:
                     type: boolean
                     examples:
                       - true
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -338,6 +398,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ScoreboardController.ScoreboardItem'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -372,6 +444,18 @@ paths:
       responses:
         '204':
           description: 'There is no content to send for this request, but the headers may be useful. '
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -433,6 +517,12 @@ paths:
                     type: boolean
                     examples:
                       - true
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -453,6 +543,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '500':
           description: Server error
           content:
@@ -687,6 +783,10 @@ components:
           maxLength: 20
           examples:
             - password
+    Versions:
+      type: string
+      enum:
+        - 1.0.0
     email:
       type: string
       format: email
