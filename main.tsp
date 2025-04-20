@@ -1,10 +1,17 @@
 import "@typespec/http";
+import "@typespec/versioning";
 
 using Http;
+using Versioning;
 
 @service(#{ title: "Scoreboard Service", version: "1.0.0" })
 @route("/api")
+@versioned(Versions)
 namespace ScoreboardService;
+
+enum Versions {
+  v1: "1.0.0",
+}
 
 @format("uuid")
 scalar uuid extends string;
@@ -146,6 +153,9 @@ namespace UserController {
     @statusCode status: 200;
     @body body: PaginatedResponse<User>;
   } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
+  } | {
     @statusCode status: 500;
     @body body: ProblemDetails;
   };
@@ -153,6 +163,9 @@ namespace UserController {
   @post op create(@body body: UserRequest): {
     @statusCode status: 200;
     @body body: User;
+  } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
   } | {
     @statusCode status: 500;
     @body body: ProblemDetails;
@@ -198,6 +211,9 @@ namespace ScoreboardController {
     @statusCode status: 200;
     @body body: PaginatedResponse<Scoreboard>;
   } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
+  } | {
     @statusCode status: 500;
     @body body: ProblemDetails;
   };
@@ -208,6 +224,9 @@ namespace ScoreboardController {
   op createScoreboard(@body body: ScoreboardRequest): {
     @statusCode status: 200;
     @body body: Scoreboard;
+  } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
   } | {
     @statusCode status: 500;
     @body body: ProblemDetails;
@@ -220,6 +239,12 @@ namespace ScoreboardController {
     @statusCode status: 200;
     @body body: Scoreboard;
   } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
+  } | {
+    @statusCode status: 404;
+    @body body: ProblemDetails;
+  } | {
     @statusCode status: 500;
     @body body: ProblemDetails;
   };
@@ -231,6 +256,12 @@ namespace ScoreboardController {
     @statusCode status: 200;
     @body body: Scoreboard;
   } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
+  } | {
+    @statusCode status: 404;
+    @body body: ProblemDetails;
+  } | {
     @statusCode status: 500;
     @body body: ProblemDetails;
   };
@@ -240,6 +271,12 @@ namespace ScoreboardController {
   @delete
   op delete(@path id: uuid): {
     @statusCode status: 204;
+  } | {
+    @statusCode status: 400;
+    @body body: ProblemDetails;
+  } | {
+    @statusCode status: 404;
+    @body body: ProblemDetails;
   } | {
     @statusCode status: 500;
     @body body: ProblemDetails;
@@ -252,6 +289,12 @@ namespace ScoreboardController {
     op listScoreboardItems(@path id: uuid, ...PaginatedParams): {
       @statusCode status: 200;
       @body body: PaginatedResponse<ScoreboardItem>;
+    } | {
+      @statusCode status: 400;
+      @body body: ProblemDetails;
+    } | {
+      @statusCode status: 404;
+      @body body: ProblemDetails;
     } | {
       @statusCode status: 500;
       @body body: ProblemDetails;
@@ -267,6 +310,12 @@ namespace ScoreboardController {
       @statusCode status: 200;
       @body body: ScoreboardItem;
     } | {
+      @statusCode status: 400;
+      @body body: ProblemDetails;
+    } | {
+      @statusCode status: 404;
+      @body body: ProblemDetails;
+    } | {
       @statusCode status: 500;
       @body body: ProblemDetails;
     };
@@ -277,6 +326,12 @@ namespace ScoreboardController {
     @delete
     op deleteScoreboardItem(@path id: uuid, @path itemId: uuid): {
       @statusCode status: 204;
+    } | {
+      @statusCode status: 400;
+      @body body: ProblemDetails;
+    } | {
+      @statusCode status: 404;
+      @body body: ProblemDetails;
     } | {
       @statusCode status: 500;
       @body body: ProblemDetails;
