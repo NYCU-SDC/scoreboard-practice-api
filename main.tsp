@@ -245,7 +245,7 @@ namespace ScoreboardController {
       @statusCode status: 500;
       @body body: ProblemDetails;
     };
-    
+
     /** Create a scoreboard item */
     @tag("Scoreboard Items")
     @post
