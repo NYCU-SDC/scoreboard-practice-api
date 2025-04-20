@@ -42,6 +42,31 @@ paths:
           description: 'There is no content to send for this request, but the headers may be useful. '
       tags:
         - Basic
+  /api/register:
+    post:
+      operationId: BasicController_register
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Basic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BasicController.RegisterRequest'
   /api/scoreboards:
     get:
       operationId: ScoreboardController_list
@@ -299,7 +324,7 @@ paths:
                   items:
                     type: array
                     items:
-                      $ref: '#/components/schemas/UserController.User'
+                      $ref: '#/components/schemas/User'
                   totalPages:
                     type: integer
                     format: int32
@@ -343,7 +368,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserController.User'
+                $ref: '#/components/schemas/User'
         '500':
           description: Server error
           content:
@@ -422,6 +447,26 @@ components:
           type: string
         refreshToken:
           type: string
+    BasicController.RegisterRequest:
+      type: object
+      required:
+        - username
+        - password
+        - email
+      properties:
+        username:
+          type: string
+          examples:
+            - username
+        password:
+          type: string
+          examples:
+            - password
+        email:
+          allOf:
+            - $ref: '#/components/schemas/email'
+          examples:
+            - email@example.com
     ProblemDetails:
       type: object
       required:
@@ -514,7 +559,7 @@ components:
           type: string
           examples:
             - My Scoreboard
-    UserController.User:
+    User:
       type: object
       required:
         - id
