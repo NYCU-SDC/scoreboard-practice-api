@@ -238,6 +238,71 @@ paths:
       security:
         - BearerAuth: []
   /api/scoreboards/{id}/items:
+    get:
+      operationId: ScoreboardItems_listScoreboardItems
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/uuid'
+        - $ref: '#/components/parameters/PaginatedParams.page'
+        - $ref: '#/components/parameters/PaginatedParams.size'
+        - $ref: '#/components/parameters/PaginatedParams.sort'
+        - $ref: '#/components/parameters/PaginatedParams.sortBy'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - totalPages
+                  - totalItems
+                  - currentPage
+                  - pageSize
+                  - hasNextPage
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScoreboardController.ScoreboardItem'
+                  totalPages:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 10
+                  totalItems:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 100
+                  currentPage:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 1
+                  pageSize:
+                    type: integer
+                    format: int32
+                    examples:
+                      - 10
+                  hasNextPage:
+                    type: boolean
+                    examples:
+                      - true
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Scoreboard Items
+      security:
+        - BearerAuth: []
     post:
       operationId: ScoreboardItems_createScoreboardItem
       description: Create a scoreboard item
