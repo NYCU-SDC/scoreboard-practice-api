@@ -236,8 +236,17 @@ namespace ScoreboardController {
 
   @route("/{id}/items")
   namespace ScoreboardItems {
-    /** Create a scoreboard item */
     @tag("Scoreboard Items")
+    @get
+    op listScoreboardItems(@path id: uuid, ...PaginatedParams): {
+      @statusCode status: 200;
+      @body body: PaginatedResponse<ScoreboardItem>;
+    } | {
+      @statusCode status: 500;
+      @body body: ProblemDetails;
+    };
+    
+    /** Create a scoreboard item */
     @tag("Scoreboard Items")
     @post
     op createScoreboardItem(

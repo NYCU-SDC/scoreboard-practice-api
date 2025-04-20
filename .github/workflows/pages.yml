@@ -32,7 +32,7 @@ jobs:
           name: spec-file
           path: tsp-output/schema/openapi.yaml
 
-      - name: Upload redocly-ui
+      - name: Upload swagger-ui
         uses: actions/upload-artifact@v4
         with:
           name: swagger-ui
