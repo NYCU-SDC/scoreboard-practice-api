@@ -85,6 +85,15 @@ namespace BasicController {
     email: email;
   }
 
+  @route("/me")
+  @get op me(): {
+    @statusCode status: 200;
+    @body body: User;
+  } | {
+    @statusCode status: 401;
+    @body body: ProblemDetails;
+  };
+
   @route("/login")
   @post
   op login(@body body: LoginRequest): {
